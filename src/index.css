@@ -1,0 +1,291 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-card:
+    0 1px 3px 0 hsl(215 25% 14% / 0.06),
+    0 1px 2px -1px hsl(215 25% 14% / 0.06);
+  --shadow-elevated:
+    0 4px 6px -1px hsl(215 25% 14% / 0.08),
+    0 2px 4px -2px hsl(215 25% 14% / 0.06);
+  --shadow-modal:
+    0 20px 25px -5px hsl(215 25% 14% / 0.1),
+    0 8px 10px -6px hsl(215 25% 14% / 0.08);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-slide-in: slide-in 0.3s ease-out;
+  --animate-fade-in: fade-in 0.4s ease-out;
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
+}
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 215 25% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 14%;
+
+    --primary: 215 70% 28%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 175 55% 40%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 18% 93%;
+    --muted-foreground: 215 14% 46%;
+
+    --accent: 37 92% 55%;
+    --accent-foreground: 215 25% 14%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 60% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 37 92% 55%;
+    --warning-foreground: 215 25% 14%;
+
+    --info: 205 80% 56%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 215 70% 28%;
+
+    --radius: 0.625rem;
+
+    --sidebar-background: 215 25% 14%;
+    --sidebar-foreground: 210 18% 87%;
+    --sidebar-primary: 175 55% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 25% 20%;
+    --sidebar-accent-foreground: 210 18% 87%;
+    --sidebar-border: 215 20% 22%;
+    --sidebar-ring: 175 55% 50%;
+
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(215 70% 28%),
+      hsl(215 70% 38%)
+    );
+    --gradient-secondary: linear-gradient(
+      135deg,
+      hsl(175 55% 36%),
+      hsl(175 55% 46%)
+    );
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(215 25% 14%),
+      hsl(215 50% 22%)
+    );
+    --shadow-card:
+      0 1px 3px 0 hsl(215 25% 14% / 0.06),
+      0 1px 2px -1px hsl(215 25% 14% / 0.06);
+    --shadow-elevated:
+      0 4px 6px -1px hsl(215 25% 14% / 0.08),
+      0 2px 4px -2px hsl(215 25% 14% / 0.06);
+    --shadow-modal:
+      0 20px 25px -5px hsl(215 25% 14% / 0.1),
+      0 8px 10px -6px hsl(215 25% 14% / 0.08);
+  }
+
+  .dark {
+    --background: 215 25% 10%;
+    --foreground: 210 18% 93%;
+
+    --card: 215 25% 14%;
+    --card-foreground: 210 18% 93%;
+
+    --popover: 215 25% 14%;
+    --popover-foreground: 210 18% 93%;
+
+    --primary: 175 55% 50%;
+    --primary-foreground: 215 25% 14%;
+
+    --secondary: 215 40% 30%;
+    --secondary-foreground: 210 18% 93%;
+
+    --muted: 215 20% 20%;
+    --muted-foreground: 215 14% 60%;
+
+    --accent: 37 92% 55%;
+    --accent-foreground: 215 25% 14%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 20% 22%;
+    --input: 215 20% 22%;
+    --ring: 175 55% 50%;
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  /* Remove the 300ms tap delay and avoid double-tap zoom on controls (mobile). */
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+button{
+  cursor:pointer;
+}
+@layer utilities {
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .bg-gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .shadow-modal {
+    box-shadow: var(--shadow-modal);
+  }
+}
+
+/* Google Maps Autocomplete dropdown must appear above dialogs and drag-drop overlays */
+.pac-container {
+  z-index: 99999 !important;
+  pointer-events: auto !important;
+}

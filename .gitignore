@@ -1,0 +1,55 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.env
+
+# Local caches and temp output
+.pnpm-store/
+supabase/.temp/
+*.stackdump
+current-blueprint.json
+
+# One-off data-import & populate tooling (never deployed)
+scripts/_pop/
+scripts/_populate.mjs
+scripts/import/out/
+
+# Customer PII — source data for one-time import only
+sheets/
+customers_import.csv
+public/*.csv
+public/*.ics
+.backfill_*.json
+
+./backfill_customers.mjs
+
+
+*.xlsx
+*.bin
+*.mcp*
+
+# Make.com exported scenarios / local integration blueprints
+tal_hermon_make_blueprints/
+*.sql
+*_STATUS*.md
