@@ -639,18 +639,22 @@ export function useJobs() {
   // (malfunction→malfunctions, installation→installations, filter_replacement→ongoing_services)
   // and — when no technician/date is provided — stays unscheduled, landing in the
   // "ממתינים לשיבוץ" pool and OFF the monthly board until the manager schedules it.
-  const addJob = async (data: { type: JobType; customerId: string; technicianId: string; scheduledDate: string; scheduledTime: string; notes: string; status?: JobStatus; id?: string; estimatedDuration?: number; location?: string; city?: string }) => {
-    const customer = customersList.find(c => c.id === data.customerId);
+  const addJob = async (data: { type: JobType; customerId: string; technicianId: string; scheduledDate: string; scheduledTime: string; notes: string; status?: JobStatus; id?: string; estimatedDuration?: number; location?: string; city?: string; oneTimeCustomer?: { name: string; phone?: string; address?: string; city?: string } }) => {
+    // A one-time (non-client) request skips the real customer lookup/backup entirely —
+    // its name/phone/address are free text on the malfunction/installation row itself,
+    // same as any other request (neither table has a customer_id FK).
+    const oneTime = data.oneTimeCustomer;
+    const customer = oneTime ? undefined : customersList.find(c => c.id === data.customerId);
     const config = JOB_TYPE_CONFIG[data.type];
-    const persistedCustomer = await ensureCustomerInDb(customer);
-    const location = data.location || customer?.address || '';
-    const city = data.city || customer?.city || '';
+    const persistedCustomer = oneTime ? undefined : await ensureCustomerInDb(customer);
+    const location = data.location || (oneTime ? oneTime.address : customer?.address) || '';
+    const city = data.city || (oneTime ? oneTime.city : customer?.city) || '';
     const estimatedDuration = data.estimatedDuration || config.duration;
 
     const input: NewJobInsertInput = {
       customerId: persistedCustomer?.id,
-      customerName: customer?.name || 'ללא שם',
-      phone: customer?.phone || '',
+      customerName: (oneTime ? oneTime.name : customer?.name) || 'ללא שם',
+      phone: (oneTime ? oneTime.phone : customer?.phone) || '',
       city,
       address: location,
       notes: data.notes,
@@ -662,14 +666,17 @@ export function useJobs() {
     };
 
     let newId: string | null = null;
+    let newDbId: string | null = null;
     try {
       if (data.type === 'malfunction') {
         const { data: row, error } = await supabase.from('malfunctions').insert(buildMalfunctionInsert(input)).select('id').single();
         if (error) throw error;
+        newDbId = row.id;
         newId = `db-malf-${row.id}`;
       } else if (data.type === 'installation') {
         const { data: row, error } = await supabase.from('installations').insert(buildInstallationInsert(input)).select('id').single();
         if (error) throw error;
+        newDbId = row.id;
         newId = `db-inst-${row.id}`;
       } else {
         const serviceDate = data.scheduledDate || new Date().toISOString().split('T')[0];
@@ -682,12 +689,35 @@ export function useJobs() {
       toast.error('שמירת הפנייה נכשלה — נסה שוב');
     }
 
+    // Optimistically mirror the synthetic customer that useMalfunctionsInstallations
+    // will derive from the row on the next realtime refresh (same id scheme), so the
+    // one-time customer's name/phone/address show up immediately instead of flashing
+    // "ללא שם" until that refresh lands.
+    let oneTimeCustomerId: string | undefined;
+    if (oneTime && newDbId) {
+      const prefix = data.type === 'malfunction' ? 'db-malf-cust-' : data.type === 'installation' ? 'db-inst-cust-' : null;
+      if (prefix) {
+        oneTimeCustomerId = `${prefix}${newDbId}`;
+        const syntheticCustomer: Customer = {
+          id: oneTimeCustomerId,
+          name: oneTime.name || 'ללא שם',
+          phone: oneTime.phone || '',
+          address: oneTime.address || '',
+          city: oneTime.city || '',
+          email: '',
+          product: '',
+          filterReplacementMonth: 1,
+        };
+        setCustomersList(prev => [...prev, syntheticCustomer]);
+      }
+    }
+
     const newJob: Job = {
       id: newId || data.id || `j${Date.now()}`,
       type: data.type,
       status: data.status || 'draft',
       priority: config.priority,
-      customerId: persistedCustomer?.id || data.customerId,
+      customerId: oneTimeCustomerId || persistedCustomer?.id || data.customerId,
       technicianId: data.technicianId || undefined,
       scheduledDate: data.scheduledDate || undefined,
       scheduledTime: data.scheduledTime || undefined,
